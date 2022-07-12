@@ -1,4 +1,4 @@
-from db import *
+import db
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -28,9 +28,9 @@ def redirect_login_student(request: Request):
 @app.post("/login_post_student")
 def login_post(username: str = Form(...), password: str = Form(...)):
 
-    loginResponse = login_student(username, password)
+    loginResponse = db.login_student(username, password)
 
-    if (loginResponse != BLANK_STUDENT):
+    if (loginResponse != db.BLANK_STUDENT):
     
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     else:
@@ -46,9 +46,9 @@ def redirect_login_admin(request: Request):
 @app.post("/login_post_admin")
 def login_post(username: str = Form(...), password: str = Form(...)):
 
-    loginResponse = login_admin(username, password)
+    loginResponse = db.login_admin(username, password)
 
-    if (loginResponse != BLANK_ADMIN):
+    if (loginResponse != db.BLANK_ADMIN):
     
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     else:
