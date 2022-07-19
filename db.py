@@ -1,4 +1,4 @@
-from calendar import EPOCH
+import time
 from pydantic import BaseModel
 from jose import jwt, JWTError
 import os
@@ -46,7 +46,7 @@ class Message(BaseModel):
     contents: str
     sentBy: str
     sentByID: str
-    timeSent: EPOCH
+    timeSent: int
 
 class BullyingRequest(BaseModel):
 
@@ -80,8 +80,8 @@ BLANK_ADMIN = Admin(name="", password="", controllingClass="", dbID=-1, adminID=
 # BLANK_TEACHER = Teacher(name="", password="", studentID=-1, dbID=0, controllingClass="")
 # BLANK_COUNSELLOR = Counsellor(name="", password="", dbID=-1, counsellorID=0, responsibleClass="")
 BLANK_CLASSROOM = Classroom(name="", dbID=-1, controllingTeacher="")
-BLANK_GROUP = Group(name="", dbID=-1, classroomID=-1)
 BLANK_MESSAGE = Message(contents="", sentBy="", sentByID=-1, timeSent=0)
+BLANK_GROUP = Group(name="", dbID=-1, classroomID=-1)
 BLANK_BULLYING_REQUEST = BullyingRequest(requestedBy="", requestedByID="", cause="", causeID="", controlledBy="", controlledByID="", dbID=-1, completed=False)
 
 students = [Student(name="iamname", password="iampassword", studentClass="nope", studentID=0, dbID=0)]
@@ -196,6 +196,106 @@ def delete_admin(adminID, role):
             adminNeedingDeletion = admin
 
     del admins[admins.index(adminNeedingDeletion):admins.index(adminNeedingDeletion) + 1]
+
+#Classroom Functions
+def add_classroom(name, controllingTeacher):
+
+    classrooms.append(Classroom(name=name, dbID=get_last_id(classrooms) + 1, controllingTeacher=controllingTeacher))
+
+def get_classrooms():
+
+    return classrooms
+
+def get_classroom_object_from_name(name):
+
+    for classroom in classrooms:
+
+        if (classroom.name == name):
+
+            return classroom
+    
+    return BLANK_CLASSROOM
+
+def delete_classroom(name):
+
+    for classroom in classrooms:
+
+        if (classroom.name == name):
+
+            classroomNeedingDeletion = classroom
+    
+    del classrooms[classrooms.index(classroomNeedingDeletion):classrooms.index(classroomNeedingDeletion) + 1]
+
+#Message Functions
+def add_message(contents, sentBy, sentByID):
+
+    messages.append(Message(contents=contents, sentBy=sentBy, sentByID=sentByID, timeSent=int(time.time())))
+
+def get_message():
+
+    return admins
+
+def get_message_from_time1_to_time2(time1, time2):
+
+    messages_arr = []
+    for i in messages:
+        if i.timeSent >= time1 and i.timeSent <= time2:
+
+            messages_arr.append(i)
+            next(i)
+#Group functions
+def add_group(name, classroomID):
+
+    classrooms.append(Group(name=name, dbID=get_last_id(groups) + 1, classroomID=classroomID))
+
+def get_groups():
+
+    return groups
+
+def get_group_object_from_classroom_id(classroomID):
+
+    for group in groups:
+
+        if (group.classroomID == classroomID):
+
+            return group
+    
+    return BLANK_GROUP
+
+def delete_group(name, classroomID):
+
+    for group in groups:
+
+        if (group.name == name and group.classroomID == classroomID):
+
+            groupNeedingDeletion = group
+    
+    del groups[groups.index(groupNeedingDeletion):groups.index(groupNeedingDeletion) + 1]
+
+#Bullying request functions
+def add_bullying_request(requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, completed):
+
+    bullying_requests.append(BullyingRequest(requestedBy=requestedBy, requestedByID=requestedByID, cause=cause, causeID=causeID, controlledBy=controlledBy, controlledByID=controlledByID, dbID=get_last_id(bullying_requests) + 1, completed=completed))
+
+def get_bullying_requests():
+
+    return bullying_requests
+
+def get_bullying_request_by_requestedID_and_causeID(requestedID, causeID):
+
+    for request in bullying_requests:
+
+        if (request.requestedByID == requestedID and request.causeID == causeID):
+
+            return request
+    
+    return BLANK_BULLYING_REQUEST
+
+def update_bullying_request(state, requestedID, causeID):
+
+    bullying = get_bullying_request_by_requestedID_and_causeID(requestedID, causeID)
+    bullying_requests[BullyingRequest.index(bullying)] = BullyingRequest(requestedBy=bullying.requestedBy, requestedByID=bullying.requestedByID, cause=bullying.cause, causeID=bullying.causeID, controlledBy=bullying.controlledBy, controlledByID=bullying.controlledByID, dbID=bullying.dbID, completed=state)
+
 
 '''
 #Teacher functions
