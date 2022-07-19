@@ -47,6 +47,7 @@ class Message(BaseModel):
     sentBy: str
     sentByID: str
     timeSent: int
+    groupID: int
 
 class BullyingRequest(BaseModel):
 
@@ -59,26 +60,8 @@ class BullyingRequest(BaseModel):
     dbID: int
     completed: bool
 
-'''class Teacher(BaseModel):
-
-    name: str
-    password: str
-    teacherID: int
-    dbID: int
-    controllingClass: str
-
-class Counsellor(BaseModel):
-
-    name: str
-    password: str
-    dbID: int
-    counsellorID: int
-    responsibleClass: str'''
-
 BLANK_STUDENT = Student(name="", password="", studentClass="", studentID=-1, dbID=-1)
 BLANK_ADMIN = Admin(name="", password="", controllingClass="", dbID=-1, adminID=-1, role="")
-# BLANK_TEACHER = Teacher(name="", password="", studentID=-1, dbID=0, controllingClass="")
-# BLANK_COUNSELLOR = Counsellor(name="", password="", dbID=-1, counsellorID=0, responsibleClass="")
 BLANK_CLASSROOM = Classroom(name="", dbID=-1, controllingTeacher="")
 BLANK_MESSAGE = Message(contents="", sentBy="", sentByID=-1, timeSent=0)
 BLANK_GROUP = Group(name="", dbID=-1, classroomID=-1)
@@ -86,8 +69,6 @@ BLANK_BULLYING_REQUEST = BullyingRequest(requestedBy="", requestedByID="", cause
 
 students = [Student(name="iamname", password="iampassword", studentClass="nope", studentID=0, dbID=0)]
 admins = [Admin(name="iamname", password="iampassword", controllingClass="Nope", dbID=0, adminID="admin-1", role="Nope")]
-# teachers = [Teacher(name="iamname", password="iampassword", studentID=0, dbID=0, controllingClass="")]
-# counsellors = [Counsellor(name="iamname", password="iampassword", dbID=0, counsellorID=0, responsibleClass="")]
 classrooms = [Classroom(name="iamname", dbID=0, controllingTeacher="iamteacher")]
 groups = [Group(name="iamname", dbID=0, classroomID=0)]
 messages = [Message(contents="iamcontents", sentBy="iamname", sentByID=0, timeSent=0)]
@@ -227,22 +208,25 @@ def delete_classroom(name):
     del classrooms[classrooms.index(classroomNeedingDeletion):classrooms.index(classroomNeedingDeletion) + 1]
 
 #Message Functions
-def add_message(contents, sentBy, sentByID):
+def add_message(contents, sentBy, sentByID, groupID):
 
-    messages.append(Message(contents=contents, sentBy=sentBy, sentByID=sentByID, timeSent=int(time.time())))
+    messages.append(Message(contents=contents, sentBy=sentBy, sentByID=sentByID, groupID=groupID, timeSent=int(time.time())))
 
 def get_message():
 
     return admins
 
-def get_message_from_time1_to_time2(time1, time2):
+def get_message_from_time1_to_time2(time1, time2, groupID):
 
     messages_arr = []
     for i in messages:
-        if i.timeSent >= time1 and i.timeSent <= time2:
+        if i.timeSent >= time1 and i.timeSent <= time2 and i.groupID == groupID:
 
             messages_arr.append(i)
             next(i)
+
+    return messages_arr
+
 #Group functions
 def add_group(name, classroomID):
 
@@ -295,103 +279,3 @@ def update_bullying_request(state, requestedID, causeID):
 
     bullying = get_bullying_request_by_requestedID_and_causeID(requestedID, causeID)
     bullying_requests[BullyingRequest.index(bullying)] = BullyingRequest(requestedBy=bullying.requestedBy, requestedByID=bullying.requestedByID, cause=bullying.cause, causeID=bullying.causeID, controlledBy=bullying.controlledBy, controlledByID=bullying.controlledByID, dbID=bullying.dbID, completed=state)
-
-
-'''
-#Teacher functions
-def add_teacher(name, password, teacherID, controllingClass):
-
-    teachers.append[Teacher(name=name, password=password, teacherID=teacherID, dbID=get_last_id(teachers) + 1, controllingClass=controllingClass)]
-
-def get_teachers():
-
-    return teachers
-
-def get_teacher_object_from_username_password(username, password):
-
-    for teacher in teachers:
-
-        if (teacher.name == username and teacher.password == password):
-
-            return teacher
-    
-    return BLANK_TEACHER
-
-def login_teacher(username, password):
-
-    return get_teacher_object_from_username_password(username, password)
-
-def update_teacher(password, controllingClass, teacherID):
-
-    #The password and controllingClass is what we want changed
-    #We use teacherID to find the teacher
-
-    teacherNeedingUpdate = BLANK_ADMIN
-
-    for teacher in teachers:
-
-        if (teacher.teacherID == teacherID):
-
-            teacherNeedingUpdate = teacher
-        
-    teachers[teachers.index(teacherNeedingUpdate)] = Teacher(name=teacherNeedingUpdate.name, password=password, teacherID=teacherID, dbID=get_last_id(teachers) + 1, controllingClass=controllingClass)
-
-def delete_teacher(teacherID):
-
-    teacherNeedingDeletion = BLANK_ADMIN
-
-    for teacher in teachers:
-
-        if (teacher.teacherID == teacherID):
-
-            teacherNeedingDeletion = teacher
-
-    del teachers[teachers.index(teacherNeedingDeletion):teachers.index(teacherNeedingDeletion) + 1]
-
-#Counsellor functions
-def add_counsellor(name, password, counsellorID, controllingClass):
-
-    counsellors.append[Counsellor(name=name, password=password, dbID=get_last_id(counsellors) + 1, counsellorID=counsellorID, controllingClass=controllingClass)]
-
-def get_counsellors():
-
-    return counsellors
-
-def gte_counsellors_from_username_password(username, password):
-
-    for counsellor in counsellors:
-
-        if (counsellor.name == username and counsellor.password == password):
-
-            return counsellor
-    
-    return BLANK_COUNSELLOR
-
-def login_counsellor(username, password):
-
-    return gte_counsellors_from_username_password(username, password)
-
-def update_counsellor(password, responsibleClass, counsellorID):
-
-    counsellorNeedingUpdate = BLANK_COUNSELLOR
-
-    for counsellor in counsellors:
-
-        if (counsellor.counsellorID== counsellorID):
-
-            counsellorNeedingUpdate = counsellor
-        
-    counsellors[counsellors.index(counsellorNeedingUpdate)] = Counsellor(name=counsellorNeedingUpdate.name, password=password, dbID=counsellorNeedingUpdate.dbID, counsellorID=counsellorID, responsibleClass=responsibleClass) 
-
-def delete_counsellor(counsellorID):
-
-    counsellorNeedingDeletion = BLANK_COUNSELLOR
-
-    for counsellor in counsellors:
-
-        if (counsellor.counsellorID == counsellorID):
-
-            counsellorNeedingDeletion = counsellor
-
-    del counsellors[counsellors.index(counsellorNeedingDeletion):counsellors.index(counsellorNeedingDeletion) + 1]
-    '''

@@ -20,37 +20,39 @@ def redirect_home(request: Request):
     
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/login_student")
-def redirect_login_student(request: Request):
 
-    return templates.TemplateResponse("loginStudent.html", {"request": request})
 
-@app.post("/login_post_student")
-def login_post(username: str = Form(...), password: str = Form(...)):
+# @app.get("/login_student")
+# def redirect_login_student(request: Request):
 
-    loginResponse = db.login_student(username, password)
+#     return templates.TemplateResponse("loginStudent.html", {"request": request})
 
-    if (loginResponse != db.BLANK_STUDENT):
+# @app.post("/login_post_student")
+# def login_post(username: str = Form(...), password: str = Form(...)):
+
+#     loginResponse = db.login_student(username, password)
+
+#     if (loginResponse != db.BLANK_STUDENT):
     
-        return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    else:
+#         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
+#     else:
         
-        return RedirectResponse("/login_student?error=True", status_code=status.HTTP_302_FOUND)
+#         return RedirectResponse("/login_student?error=True", status_code=status.HTTP_302_FOUND)
 
 
-@app.get("/login_admin")
-def redirect_login_admin(request: Request):
+# @app.get("/login_admin")
+# def redirect_login_admin(request: Request):
 
-    return templates.TemplateResponse("loginAdmin.html", {"request": request})
+#     return templates.TemplateResponse("loginAdmin.html", {"request": request})
 
-@app.post("/login_post_admin")
-def login_post(username: str = Form(...), password: str = Form(...)):
+# @app.post("/login_post_admin")
+# def login_post(username: str = Form(...), password: str = Form(...)):
 
-    loginResponse = db.login_admin(username, password)
+#     loginResponse = db.login_admin(username, password)
 
-    if (loginResponse != db.BLANK_ADMIN):
+#     if (loginResponse != db.BLANK_ADMIN):
     
-        return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    else:
+#         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
+#     else:
         
-        return RedirectResponse("/login_admin?error=True", status_code=status.HTTP_302_FOUND)
+#         return RedirectResponse("/login_admin?error=True", status_code=status.HTTP_302_FOUND)
