@@ -216,11 +216,11 @@ def get_message():
 
     return admins
 
-def get_message_from_time1_to_time2(time1, time2, groupID):
+def get_message_from_time1_to_time2(time1, time2):
 
     messages_arr = []
     for i in messages:
-        if i.timeSent >= time1 and i.timeSent <= time2 and i.groupID == groupID:
+        if i.timeSent >= time1 and i.timeSent <= time2:
 
             messages_arr.append(i)
             next(i)
