@@ -8,7 +8,7 @@ from datetime import date, datetime, timedelta
 
 SECRET_KEY = os.environ.get("APP_SECRET_KEY", "DefaultKey")
 pwd_context = CryptContext(schemes = ["bcrypt"], deprecated = "auto")
-conn = psycopg2.connect("user=postgres password=safechat")
+conn = psycopg2.connect("user=REDACTED password=REDACTED")
 
 def hash_password(password: str) -> str:
     
