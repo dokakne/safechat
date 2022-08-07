@@ -1,7 +1,7 @@
 import psycopg2
 
 # Connect to your postgres DB
-conn = psycopg2.connect("user=postgres password=safechat")
+conn = psycopg2.connect("user=REDACTED password=REDACTED")
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
