@@ -88,6 +88,10 @@ def add_base():
 
     cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, dbID) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', '0')", False)
     cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', '-1', 'NOROLE')", False)
+    cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingTeacher) VALUES ('LMAO', '-1', 'LMAO')", False)
+    cursor_func(f"INSERT INTO GROUPS (name, dbID, classroomID) VALUES ('LMAO', '-1', '-1')", False)
+    cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('LMAO', 'LMAO', '-1', '-1', '-1')", False)
+    cursor_func(f"INSERT INTO BULLYINGREQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('LMAO', '-1', 'LMAO', '-1', 'LMAO', '-1', '-1', 'False')", False)
 
 def clear_tables():
 
@@ -219,3 +223,103 @@ def delete_classroom(name):
 
     cursor_func(f"DELETE FROM CLASSROOMS WHERE name='{name}'", False)
 
+#Message functions
+def create_message_tables():
+
+    cursor_func("CREATE TABLE IF NOT EXISTS MESSAGES (contents TEXT, sentBy TEXT, sentByID INTEGER, timeSent INTEGER, groupID INTEGER)", False)
+
+def add_message(contents, sentBy, sentByID, groupID):
+
+    cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('{contents}', '{sentBy}', '{sentByID}', '{int(time.time())}', '{groupID}')", False)
+
+def get_messages():
+
+    massages = cursor_func("SELECT * FROM MESSAGES", True)
+    arr = []
+    for i in massages:
+            
+        ii = list(i)
+        arr.append(Message(contents=ii[0], sentBy=ii[1], sentByID=ii[2], timeSent=ii[3], groupID=ii[4]))
+    
+    return arr
+
+def get_message_from_time1_to_time2(time1, time2):
+
+    messages_arr = []
+    for i in get_messages():
+        if i.timeSent >= time1 and i.timeSent <= time2:
+
+            messages_arr.append(i)
+            next(i)
+
+    return messages_arr
+
+
+#Group functions
+def create_group_tables():
+
+    cursor_func("CREATE TABLE IF NOT EXISTS GROUPS (name TEXT, dbID INTEGER, controllingClass TEXT)", False)
+
+def get_groups():
+
+    greps = cursor_func("SELECT * FROM GROUPS", True)
+    arr = []
+    for i in greps:
+                
+        ii = list(i)
+        arr.append(Group(name=ii[0], dbID=ii[1], controllingClass=ii[2]))
+    
+    return arr
+
+def add_group(name, classroomID):
+
+    cursor_func(f"INSERT INTO GROUPS (name, dbID, controllingClass) VALUES ('{name}', '{get_last_id(get_groups()) + 1}', '{classroomID}')", False)
+
+
+
+def get_group_object_from_classroom_id(classroomID):
+
+    for group in get_groups():
+
+        if (group.classroomID == classroomID):
+
+            return group
+    
+    return BLANK_GROUP
+
+def delete_group(name, classroomID):
+
+    cursor_func(f"DELETE FROM GROUPS WHERE name='{name}' AND controllingClass='{classroomID}'", False) 
+
+#Bullying request functions
+def create_bullying_request_tables():
+
+    cursor_func("CREATE TABLE IF NOT EXISTS BULLYING_REQUESTS (name TEXT, dbID INTEGER, controllingClass TEXT)", False)
+
+def get_bullying_requests():
+
+    bellying = cursor_func("SELECT * FROM BULLYING_REQUESTS", True)
+    arr = []
+    for i in bellying:
+
+        ii = list(i)
+        arr.append(BullyingRequest(name=ii[0], dbID=ii[1], controllingClass=ii[2]))
+    
+    return arr
+def add_bullying_request(requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, completed):
+
+    cursor_func(f"INSERT INTO BULLYING_REQUESTS (name, dbID, controllingClass) VALUES ('{requestedBy}', '{get_last_id(get_bullying_requests()) + 1}', '{controlledBy}')", False)
+
+def get_bullying_request_by_requestedID_and_causeID(requestedID, causeID):
+
+    for request in get_bullying_requests():
+            
+        if (request.requestedByID == requestedID and request.causeID == causeID):
+
+            return request
+    
+    return BLANK_BULLYING_REQUEST
+
+def update_bullying_request(state, requestedID, causeID):
+
+    cursor_func(f"UPDATE BULLYING_REQUESTS SET completed='{state}' WHERE requestedByID='{requestedID}' AND causeID='{causeID}'", False)
