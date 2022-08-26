@@ -96,6 +96,12 @@ def add_base():
 def clear_tables():
 
     cursor_func("DELETE FROM STUDENTS;",False)
+    cursor_func("DELETE FROM ADMINS;",False)
+    cursor_func("DELETE FROM CLASSROOMS;",False)
+    cursor_func("DELETE FROM GROUPS;",False)
+    cursor_func("DELETE FROM MESSAGES;",False)
+    cursor_func("DELETE FROM BULLYINGREQUESTS;",False)
+    
 
 #Student functions
 def create_students():
