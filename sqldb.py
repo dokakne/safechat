@@ -91,7 +91,7 @@ def add_base():
     cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingTeacher) VALUES ('LMAO', '-1', 'LMAO')", False)
     cursor_func(f"INSERT INTO GROUPS (name, dbID, classroomID) VALUES ('LMAO', '-1', '-1')", False)
     cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('LMAO', 'LMAO', '-1', '-1', '-1')", False)
-    cursor_func(f"INSERT INTO BULLYINGREQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('LMAO', '-1', 'LMAO', '-1', 'LMAO', '-1', '-1', 'False')", False)
+    cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('LMAO', '-1', 'LMAO', '-1', 'LMAO', '-1', '-1', 'False')", False)
 
 def clear_tables():
 
@@ -100,8 +100,8 @@ def clear_tables():
     cursor_func("DELETE FROM CLASSROOMS;",False)
     cursor_func("DELETE FROM GROUPS;",False)
     cursor_func("DELETE FROM MESSAGES;",False)
-    cursor_func("DELETE FROM BULLYINGREQUESTS;",False)
-    
+    cursor_func("DELETE FROM BULLYING_REQUESTS;",False)
+
 
 #Student functions
 def create_students():
