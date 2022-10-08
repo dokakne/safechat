@@ -62,7 +62,7 @@ class BullyingRequest(BaseModel):
 BLANK_STUDENT = Student(name="", password="", studentClass="", studentID=-1, dbID=-1)
 BLANK_ADMIN = Admin(name="", password="", controllingClass="", dbID=-1, adminID=-1, role="")
 BLANK_CLASSROOM = Classroom(name="", dbID=-1, controllingTeacher="")
-BLANK_MESSAGE = Message(contents="", sentBy="", sentByID=-1, timeSent=0)
+BLANK_MESSAGE = Message(contents="", sentBy="", sentByID=-1, timeSent=0, groupID=-1)
 BLANK_GROUP = Group(name="", dbID=-1, classroomID=-1)
 BLANK_BULLYING_REQUEST = BullyingRequest(requestedBy="", requestedByID="", cause="", causeID="", controlledBy="", controlledByID="", dbID=-1, completed=False)
 
@@ -70,7 +70,7 @@ students = [Student(name="iamname", password="iampassword", studentClass="nope",
 admins = [Admin(name="iamname", password="iampassword", controllingClass="Nope", dbID=0, adminID="admin-1", role="Nope")]
 classrooms = [Classroom(name="iamname", dbID=0, controllingTeacher="iamteacher")]
 groups = [Group(name="iamname", dbID=0, classroomID=0)]
-messages = [Message(contents="iamcontents", sentBy="iamname", sentByID=0, timeSent=0)]
+messages = [Message(contents="iamcontents", sentBy="iamname", sentByID=0, timeSent=0, groupID=0)]
 bullying_requests = [BullyingRequest(requestedBy="iamname", requestedByID="iamid", cause="iamname", causeID="iamid", controlledBy="iamname", controlledByID="iamid", dbID=-1, completed=False)]
 
 def get_last_id(arr):
