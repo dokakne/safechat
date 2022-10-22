@@ -45,9 +45,14 @@ def get_students(request: Request):
     return sqldb.get_students()
 
 @app.post("/add_student")
-def post_add_student(name: str = Form(...), password: str = Form(...), studentClass: str = Form(...), studentID: int = Form(...)):
+def post_add_student(name: str = Form(...), password: str = Form(...), studentClass: str = Form(...), DoB: str = Form(...), Address: str = Form(...), PhoneNumber: int = Form(...), studentID: int = Form(...)):
 
-    sqldb.add_student(name, password, studentClass, studentID)
+    sqldb.add_student(name, password, studentClass, DoB, Address, PhoneNumber, studentID)
+
+@app.get("/get_students")
+def get_students(request: Request):
+
+    return sqldb.get_students()
 
 @app.post("/delete_student")
 def post_delete_student(studentID: int = Form(...)):

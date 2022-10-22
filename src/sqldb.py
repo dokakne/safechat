@@ -20,6 +20,9 @@ class Student(BaseModel):
     password: str
     studentClass: str
     studentID: str
+    DoB: str
+    Address: str
+    PhoneNumber: int
     dbID: int
     
 class Admin(BaseModel):
@@ -65,7 +68,7 @@ class BullyingRequest(BaseModel):
     dbID: int
     completed: bool
 
-BLANK_STUDENT = Student(name="", password="", studentClass="", studentID=-1, dbID=-1)
+BLANK_STUDENT = Student(name="", password="", studentClass="", studentID=-1, DoB="", Address="", PhoneNumber=-1, dbID=-1)
 BLANK_ADMIN = Admin(name="", password="", controllingClass="", dbID=-1, adminID=-1, role="")
 BLANK_CLASSROOM = Classroom(name="", dbID=-1, controllingTeacher="")
 BLANK_MESSAGE = Message(contents="", sentBy="", sentByID=-1, timeSent=0, groupID=-1)
@@ -89,11 +92,11 @@ def cursor_func(function, fetch):
 
 def add_base():
 
-    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, dbID) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', 0)", False)
-    cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('LMAO', 'LMAO', 'NOCLASS', -1, '-1', 'NOROLE')", False)
+    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', 'NODOB', 'Bannnana Lane', 321489, 0)", False)
+    cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('LMAO', 'LMAO', 'NOCLASS', -1, -1, 'NOROLE')", False)
     cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingTeacher) VALUES ('LMAO', -1, 'LMAO')", False)
     cursor_func(f"INSERT INTO GROUPS (person1, person1ID, person2, person2ID, dbID, classroomID) VALUES ('LMAO', 'LMAO', 'LMAO', 'LMAO', -1, -1)", False)
-    cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('LMAO', 'LMAO', '-1', '-1', '-1')", False)
+    cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('LMAO', 'LMAO', -1, -1, -1)", False)
     cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('LMAO', '-1', 'LMAO', '-1', 'LMAO', '-1', -1, FALSE)", False)
 def clear_tables():
 
@@ -108,11 +111,11 @@ def clear_tables():
 #Student functions
 def create_students():
 
-    cursor_func("CREATE TABLE IF NOT EXISTS STUDENTS (name TEXT, password TEXT, studentClass TEXT, studentID INTEGER, dbID INTEGER)", False)
+    cursor_func("CREATE TABLE IF NOT EXISTS STUDENTS (name TEXT, password TEXT, studentClass TEXT, studentID INTEGER, DoB TEXT, Address TEXT, PhoneNumber INTEGER, dbID INTEGER)", False)
 
-def add_student(name, password, studentClass, studentID):
+def add_student(name, password, studentClass, DoB, Address, PhoneNumber, studentID):
 
-    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, dbID) VALUES ('{name}', '{password}', '{studentClass}', '{studentID}', '{get_last_id(get_students()) + 1}')", False)
+    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('{name}', '{password}', '{studentClass}', '{studentID}', '{DoB}', '{Address}', {PhoneNumber},'{get_last_id(get_students()) + 1}')", False)
 
 def get_students():
 
@@ -121,7 +124,7 @@ def get_students():
     for i in studnets:
 
         ii = list(i)
-        arr.append(Student(name=ii[0], password=ii[1], studentClass=ii[2], studentID=ii[3], dbID=ii[4]))
+        arr.append(Student(name=ii[0], password=ii[1], studentClass=ii[2], studentID=ii[3], DoB=ii[4], Address=ii[5], PhoneNumber=ii[6], dbID=ii[7]))
     return arr
 
 def get_student_object_from_username_and_password(username, password):
