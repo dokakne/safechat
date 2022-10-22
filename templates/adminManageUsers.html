@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Manage Users</title>
+    <script src="https://kit.fontawesome.com/697157a231.js" crossorigin="anonymous"></script>
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div id="pageRow" class="row">
+            <header class="col-2" id="header">
+                <style scoped>
+                    @import url("/static/css/adminHeader.css");
+                </style>
+                <div class="d-flex flex-column">
+                    <img src="/static/img/logotmp.png" />
+                    <div class="profile">
+                        <img src="https://crop-circle.imageonline.co/image.png" alt="" class="img-fluid rounded-circle" id="IMG_1" />
+                        <h1 class="text-light"><a href="index.html">Raviish Panicker</a></h1>
+                    </div>
+                    <nav id="navbar" class="nav-menu">
+                        <ul>
+                            <li><a class="nav-link scrollto"><span>Home</span></a></li>
+                            <li><a class="nav-link scrollto active"><span>Manage Users</span></a></li>
+                            <li><a class="nav-link scrollto"><span>View Complaints</span></a></li>
+                            <li><a class="nav-link scrollto"><span>Settings</span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+
+            <div class="col-10">
+                <h1 class="student-heading">
+                    Students
+                </h1>
+                <div id="myGrid" class="ag-theme-alpine"></div>
+            </div>
+
+        </div>
+        
+    </div>
+    
+
+
+
+</body>
+
+<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.js"></script>
+<script>
+    const columnDefs = [
+  { headerName: "UID", field: "uid"},
+  { headerName: "Name", field: "name"},
+  { headerName: "Date of Birth", field: "dob"},
+  { headerName: "Phone Number", field: "number"},
+  { headerName: "Email", field: "email"},
+  { headerName: "Address", field: "address"}
+];
+
+const rowData = [
+  { uid: "1", name: "Raviish", dob: "02/05/07", number: "1234567890", email: "panicker.raviish2@gmail.com", address: "123 Road St., Bellandur, Bangalore"}
+];
+
+const gridOptions = {
+  columnDefs: columnDefs,
+  rowData: rowData
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const gridDiv = document.querySelector('#myGrid');
+    new agGrid.Grid(gridDiv, gridOptions);
+});
+</script>
+
+</html>
+

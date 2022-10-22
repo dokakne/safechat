@@ -1,4 +1,4 @@
-import db
+# import db
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -19,6 +19,16 @@ templates = Jinja2Templates(directory="templates")
 def redirect_home(request: Request):
     
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/admin_home")
+def admin_home(request: Request):
+    
+    return templates.TemplateResponse("adminHome.html", {"request": request})
+
+@app.get("/admin_manage_users")
+def admin_home(request: Request):
+    
+    return templates.TemplateResponse("adminManageUsers.html", {"request": request})
 
 #Student functions
 @app.post("/add_student")
@@ -122,3 +132,4 @@ def get_bullying_requests():
 def update_bullying_request(state: bool = Form(...), requestedID: str = Form(...), causeID: str = Form(...)):
 
     db.update_bullying_request(state, requestedID, causeID)
+
