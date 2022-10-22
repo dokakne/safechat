@@ -58,6 +58,7 @@
   { headerName: "UID", field: "uid"},
   { headerName: "Name", field: "name"},
   { headerName: "Date of Birth", field: "dob"},
+  { headerName: "Class", field: "class"}
   { headerName: "Phone Number", field: "number"},
   { headerName: "Email", field: "email"},
   { headerName: "Address", field: "address"}
@@ -65,13 +66,10 @@
 
 var rowData = [];
 
-axios.get("/get_user_data")
+axios.get("/get_students")
 .then(function (response) {
-    
-    rowData = [
-        { uid: "1", name: "Raviish", dob: "02/05/07", number: "1234567890", email: "panicker.raviish2@gmail.com", address: "123 Road St., Bellandur, Bangalore"}
-    ];
-})
+    rowData = response.data.map(function(student) {return { uid: student.studentID, name: student.name, dob: student.DoB, class: student.studentClass, number: student.PhopneNumber, email: student.email, address: student.Address}});
+});
 
 
 const gridOptions = {
