@@ -1,0 +1,227 @@
+body {
+    font-family: "Open Sans", sans-serif;
+    color: #272829
+}
+
+a {
+    color: #149ddd;
+    text-decoration: none
+}
+
+a:hover {
+    color: #37b3ed;
+    text-decoration: none
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: Raleway, sans-serif
+}
+
+#header {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transition: all ease-in-out .5s;
+    z-index: 9997;
+    transition: all .5s;
+    padding: 0 15px;
+    background: #040b14;
+    overflow-y: auto
+}
+
+#header .profile h1 {
+    font-size: 1.4rem;
+    margin: 0;
+    padding: 0;
+    padding-top: 10px;
+    padding-bottom: 25px;
+    font-weight: 600;
+    -moz-text-align-last: center;
+    text-align-last: center;
+    font-family: Poppins, sans-serif
+}
+
+#header .profile h1 a,
+#header .profile h1 a:hover {
+    color: #fff;
+    text-decoration: none
+}
+
+@media (max-width:1199px) {
+    #header {
+        left: -300px
+    }
+}
+
+#navbar span {
+    font-size: 1.15rem;
+}
+
+#pageRow {
+    height: 100vh;
+}
+
+.nav-menu {
+    padding: 30px 0 0 0
+}
+
+.nav-menu * {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+.nav-menu>ul>li {
+    position: relative;
+    white-space: nowrap
+}
+
+.nav-menu a,
+.nav-menu a:focus {
+    display: flex;
+    align-items: center;
+    color: #a8a9b4;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    transition: .3s;
+    font-size: 15px
+}
+
+.nav-menu a i,
+.nav-menu a:focus i {
+    font-size: 24px;
+    padding-right: 8px;
+    color: #6f7180
+}
+
+#navbar>ul>li:hover {
+    background-color: #040b14;
+    transition-property: background-color;
+    transition-duration: .3s;
+}
+
+#navbar>ul>li:hover {
+    background-color: #141c26;
+}
+
+.nav-menu .active,
+.nav-menu .active:focus,
+.nav-menu a:hover,
+.nav-menu li:hover>a {
+    text-decoration: none;
+    color: #fff
+}
+
+.nav-menu .active i,
+.nav-menu .active:focus i,
+.nav-menu a:hover i,
+.nav-menu li:hover>a i {
+    color: #149ddd
+}
+
+.d-flex>img {
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    height: 40px;
+}
+
+.contact {
+    padding-bottom: 130px
+}
+
+@-webkit-keyframes animate-loading {
+    0% {
+        transform: rotate(0)
+    }
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes animate-loading {
+    0% {
+        transform: rotate(0)
+    }
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+#IMG_1,
+#IMG_1:after,
+#IMG_1:before {
+    box-sizing: border-box;
+    caret-color: rgb(39, 40, 41);
+    color: #272829;
+    column-rule-color: rgb(39, 40, 41);
+    text-decoration: none solid rgb(39, 40, 41);
+    text-emphasis-color: rgb(39, 40, 41);
+    text-size-adjust: 100%;
+    font: 16px/24px "Open Sans", sans-serif;
+    outline: rgb(39, 40, 41) 0
+}
+
+#IMG_1 {
+    block-size: 120px;
+    border-block-end-color: rgb(44, 47, 63);
+    border-block-end-style: solid;
+    border-block-end-width: 8px;
+    border-block-start-color: rgb(44, 47, 63);
+    border-block-start-style: solid;
+    border-block-start-width: 8px;
+    border-end-end-radius: 50%;
+    border-end-start-radius: 50%;
+    border-inline-end-color: rgb(44, 47, 63);
+    border-inline-end-style: solid;
+    border-inline-end-width: 8px;
+    border-inline-start-color: rgb(44, 47, 63);
+    border-inline-start-style: solid;
+    border-inline-start-width: 8px;
+    border-start-end-radius: 50%;
+    border-start-start-radius: 50%;
+    display: block;
+    height: 120px;
+    inline-size: 120px;
+    margin-block-end: 15px;
+    margin-block-start: 15px;
+    margin-inline-end: 75px;
+    margin-inline-start: 75px;
+    max-inline-size: 100%;
+    max-width: 100%;
+    perspective-origin: 60px 60px;
+    transform-origin: 60px 60px;
+    vertical-align: middle;
+    width: 120px;
+    border: 8px solid #2c2f3f;
+    border-radius: 50%;
+    margin: 15px 75px
+}
+
+#IMG_1:after,
+#IMG_1:before {
+    border-block-end-color: rgb(39, 40, 41);
+    border-block-start-color: rgb(39, 40, 41);
+    border-inline-end-color: rgb(39, 40, 41);
+    border-inline-start-color: rgb(39, 40, 41);
+    border: 0 #272829
+}
+
+.student-heading {
+    margin-top: 40px;
+    margin-left: 40px;
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+#myGrid {
+    margin: auto;
+    margin-top: 100px;
+    height: 200px;
+    width: 90%;
+}
