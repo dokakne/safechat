@@ -51,6 +51,7 @@
 
 </body>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.js"></script>
 <script>
     const columnDefs = [
@@ -62,9 +63,16 @@
   { headerName: "Address", field: "address"}
 ];
 
-const rowData = [
-  { uid: "1", name: "Raviish", dob: "02/05/07", number: "1234567890", email: "panicker.raviish2@gmail.com", address: "123 Road St., Bellandur, Bangalore"}
-];
+var rowData = [];
+
+axios.get("/get_user_data")
+.then(function (response) {
+    
+    rowData = [
+        { uid: "1", name: "Raviish", dob: "02/05/07", number: "1234567890", email: "panicker.raviish2@gmail.com", address: "123 Road St., Bellandur, Bangalore"}
+    ];
+})
+
 
 const gridOptions = {
   columnDefs: columnDefs,
