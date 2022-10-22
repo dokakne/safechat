@@ -28,7 +28,7 @@ def get_login(request: Request):
 @app.get("/admin_dash")
 def get_admin_dash(request: Request):
 
-    return templates.TemplateResponse("AdminDashboard.html", {"request": request})
+    return templates.TemplateResponse("adminDashboard.html", {"request": request})
 
 @app.post("/login")
 def post_login(request: Request, username: str = Form(...), password: str = Form(...)):
