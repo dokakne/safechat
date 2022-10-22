@@ -8,7 +8,7 @@ from datetime import date, datetime, timedelta
 
 SECRET_KEY = os.environ.get("APP_SECRET_KEY", "DefaultKey")
 pwd_context = CryptContext(schemes = ["bcrypt"], deprecated = "auto")
-conn = psycopg2.connect("user=REDACTED password=REDACTED")
+conn = psycopg2.connect("user=postgres password=safechat")
 
 def hash_password(password: str) -> str:
     
@@ -19,7 +19,7 @@ class Student(BaseModel):
     name: str
     password: str
     studentClass: str
-    studentID: int
+    studentID: str
     dbID: int
     
 class Admin(BaseModel):
@@ -39,7 +39,10 @@ class Classroom(BaseModel):
 
 class Group(BaseModel):
 
-    name: str
+    person1: str
+    person1ID: str
+    person2: str
+    person2ID: str
     dbID: int
     classroomID: int
 
@@ -66,7 +69,7 @@ BLANK_STUDENT = Student(name="", password="", studentClass="", studentID=-1, dbI
 BLANK_ADMIN = Admin(name="", password="", controllingClass="", dbID=-1, adminID=-1, role="")
 BLANK_CLASSROOM = Classroom(name="", dbID=-1, controllingTeacher="")
 BLANK_MESSAGE = Message(contents="", sentBy="", sentByID=-1, timeSent=0, groupID=-1)
-BLANK_GROUP = Group(name="", dbID=-1, classroomID=-1)
+BLANK_GROUP = Group(person1="", person1ID="", person2="", person2ID="", dbID=-1, classroomID=-1)
 BLANK_BULLYING_REQUEST = BullyingRequest(requestedBy="", requestedByID="", cause="", causeID="", controlledBy="", controlledByID="", dbID=-1, completed=False)
 
 
@@ -86,13 +89,12 @@ def cursor_func(function, fetch):
 
 def add_base():
 
-    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, dbID) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', '0')", False)
-    cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', '-1', 'NOROLE')", False)
-    cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingTeacher) VALUES ('LMAO', '-1', 'LMAO')", False)
-    cursor_func(f"INSERT INTO GROUPS (name, dbID, classroomID) VALUES ('LMAO', '-1', '-1')", False)
+    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, dbID) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', 0)", False)
+    cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('LMAO', 'LMAO', 'NOCLASS', -1, '-1', 'NOROLE')", False)
+    cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingTeacher) VALUES ('LMAO', -1, 'LMAO')", False)
+    cursor_func(f"INSERT INTO GROUPS (person1, person1ID, person2, person2ID, dbID, classroomID) VALUES ('LMAO', 'LMAO', 'LMAO', 'LMAO', -1, -1)", False)
     cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('LMAO', 'LMAO', '-1', '-1', '-1')", False)
-    cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('LMAO', '-1', 'LMAO', '-1', 'LMAO', '-1', '-1', 'False')", False)
-
+    cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('LMAO', '-1', 'LMAO', '-1', 'LMAO', '-1', -1, FALSE)", False)
 def clear_tables():
 
     cursor_func("DELETE FROM STUDENTS;",False)
@@ -232,8 +234,7 @@ def delete_classroom(name):
 #Message functions
 def create_message_tables():
 
-    cursor_func("CREATE TABLE IF NOT EXISTS MESSAGES (contents TEXT, sentBy TEXT, sentByID INTEGER, timeSent INTEGER, groupID INTEGER)", False)
-
+    cursor_func("CREATE TABLE IF NOT EXISTS MESSAGES (contents TEXT, sentBy TEXT, sentByID TEXT, timeSent TEXT, groupID TEXT)", False)
 def add_message(contents, sentBy, sentByID, groupID):
 
     cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('{contents}', '{sentBy}', '{sentByID}', '{int(time.time())}', '{groupID}')", False)
@@ -241,7 +242,7 @@ def add_message(contents, sentBy, sentByID, groupID):
 def get_messages():
 
     massages = cursor_func("SELECT * FROM MESSAGES", True)
-    arr = []
+    arr= []
     for i in massages:
             
         ii = list(i)
@@ -260,11 +261,16 @@ def get_message_from_time1_to_time2(time1, time2):
 
     return messages_arr
 
+def get_messages_for_user(UID):
+
+    messages = cursor_func(f"SELECT * FROM MESSAGES WHERE sentByID='{UID}'", True)
+
+    print(messages)
 
 #Group functions
 def create_group_tables():
 
-    cursor_func("CREATE TABLE IF NOT EXISTS GROUPS (name TEXT, dbID INTEGER, controllingClass TEXT)", False)
+    cursor_func("CREATE TABLE IF NOT EXISTS GROUPS (person1 TEXT, person1ID TEXT, person2 TEXT, person2ID TEXT, dbID INTEGER, classroomID INTEFER)", False)
 
 def get_groups():
 
@@ -273,14 +279,13 @@ def get_groups():
     for i in greps:
                 
         ii = list(i)
-        arr.append(Group(name=ii[0], dbID=ii[1], controllingClass=ii[2]))
+        arr.append(Group(person1=ii[0], person1ID=ii[1], person2=ii[2], person2ID=ii[3], dbID=ii[4], classroomID=ii[5]))
     
     return arr
 
-def add_group(name, classroomID):
+def add_group(person1, person1ID, person2, person2ID, classroomID):
 
-    cursor_func(f"INSERT INTO GROUPS (name, dbID, controllingClass) VALUES ('{name}', '{get_last_id(get_groups()) + 1}', '{classroomID}')", False)
-
+    cursor_func(f"INSERT INTO GROUPS (person1, person1ID, person2, person2ID, dbID, classroomID) VALUES ('{person1}', '{person1ID}', '{person2}', '{person2ID}', '{get_last_id(get_groups()) + 1}', '{classroomID}',)", False)
 
 
 def get_group_object_from_classroom_id(classroomID):
@@ -293,14 +298,14 @@ def get_group_object_from_classroom_id(classroomID):
     
     return BLANK_GROUP
 
-def delete_group(name, classroomID):
+def delete_group(person1, classroomID):
 
-    cursor_func(f"DELETE FROM GROUPS WHERE name='{name}' AND controllingClass='{classroomID}'", False) 
+    cursor_func(f"DELETE FROM GROUPS WHERE person1='{person1}' AND classroomID='{classroomID}'", False) 
 
 #Bullying request functions
 def create_bullying_request_tables():
 
-    cursor_func("CREATE TABLE IF NOT EXISTS BULLYING_REQUESTS (name TEXT, dbID INTEGER, controllingClass TEXT)", False)
+    cursor_func("CREATE TABLE IF NOT EXISTS BULLYING_REQUESTS (requestedBy TEXT, requestedByID TEXT, cause TEXT, causeID TEXT, controlledBy TEXT, controlledByID TEXT, dbID INT, completed BOOLEAN)", False)
 
 def get_bullying_requests():
 
@@ -309,12 +314,12 @@ def get_bullying_requests():
     for i in bellying:
 
         ii = list(i)
-        arr.append(BullyingRequest(name=ii[0], dbID=ii[1], controllingClass=ii[2]))
+        arr.append(BullyingRequest(requestedBy=ii[0], requestedByID=ii[1], cause=ii[2], causeID=ii[3], controlledBy=ii[4], controlledByID=ii[5], dbID=ii[6], completed=ii[7]))
     
     return arr
 def add_bullying_request(requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, completed):
 
-    cursor_func(f"INSERT INTO BULLYING_REQUESTS (name, dbID, controllingClass) VALUES ('{requestedBy}', '{get_last_id(get_bullying_requests()) + 1}', '{controlledBy}')", False)
+    cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VAUES ('{requestedBy}', '{requestedByID}', '{cause}', '{causeID}', '{controlledBy}', '{controlledByID}', {get_last_id(get_bullying_requests()) + 1}, {completed})", False)
 
 def get_bullying_request_by_requestedID_and_causeID(requestedID, causeID):
 
@@ -329,3 +334,4 @@ def get_bullying_request_by_requestedID_and_causeID(requestedID, causeID):
 def update_bullying_request(state, requestedID, causeID):
 
     cursor_func(f"UPDATE BULLYING_REQUESTS SET completed='{state}' WHERE requestedByID='{requestedID}' AND causeID='{causeID}'", False)
+
