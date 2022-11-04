@@ -83,3 +83,38 @@ def post_report_bullying(sender: str = Form(...), senderID: int = Form(...), cau
 def post_create_chat(person1: str = Form(...), person1ID: str = Form(...), person2: str = Form(...), person2ID:str = Form(...), classroomID: int = Form(...)):
 
     sqldb.create_chat(person1, person1ID, person2, person2ID, classroomID)
+
+@app.get("/calendar")
+def get_calendar(personID: str = Form(...)):
+
+    return sqldb.get_calendar(personID)
+
+@app.get("/tasks")
+def get_tasks(personID: str = Form(...)):
+
+    return sqldb.get_tasks(personID)
+
+@app.post("/add_calendar_event")
+def post_add_calendar_event(personID: str = Form(...), event: str = Form(...), date: str = Form(...)):
+
+    sqldb.add_calendar_event(personID, event, date)
+
+@app.post("/add_task")
+def add_task(personID: str = Form(...), task: str = Form(...), date: str = Form(...)):
+
+    sqldb.add_task(personID, task, date)
+
+@app.post("/delete_calendar_event")
+def delete_calendar_event(dbID: int = Form(...)):
+
+    sqldb.delete_calendar_event_from_dbID(dbID)
+
+@app.post("/delete_task")
+def delete_task(personID: str = Form(...), title: str = Form(...)):
+
+    sqldb.delete_task(personID, title)
+
+@app.post("/complete_task")
+def complete_task(personID: str = Form(...), task: str = Form(...), date: str = Form(...)):
+
+    sqldb.update_task_completed(personID, task, date)

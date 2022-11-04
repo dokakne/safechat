@@ -68,12 +68,28 @@ class BullyingRequest(BaseModel):
     dbID: int
     completed: bool
 
+class Calendar(BaseModel):
+
+    personID: str
+    Title: str
+    Date: int
+    dbID: int
+
+class Task(BaseModel):
+
+    personID: str
+    Title: str
+    completed: bool
+    dbID: int
+
 BLANK_STUDENT = Student(name="", password="", studentClass="", studentID=-1, DoB="", Address="", PhoneNumber=-1, dbID=-1)
 BLANK_ADMIN = Admin(name="", password="", controllingClass="", dbID=-1, adminID=-1, role="")
 BLANK_CLASSROOM = Classroom(name="", dbID=-1, controllingTeacher="")
 BLANK_MESSAGE = Message(contents="", sentBy="", sentByID=-1, timeSent=0, groupID=-1)
 BLANK_GROUP = Group(person1="", person1ID="", person2="", person2ID="", dbID=-1, classroomID=-1)
 BLANK_BULLYING_REQUEST = BullyingRequest(requestedBy="", requestedByID="", cause="", causeID="", controlledBy="", controlledByID="", dbID=-1, completed=False)
+BLANK_CALENDAR = Calendar(personID="", Title="", Date=0, dbID=-1)
+BLANK_TASK = Task(personID="", Title="", completed=False, dbID=-1)
 
 
 def get_last_id(arr):
@@ -98,6 +114,8 @@ def add_base():
     cursor_func(f"INSERT INTO GROUPS (person1, person1ID, person2, person2ID, dbID, classroomID) VALUES ('LMAO', 'LMAO', 'LMAO', 'LMAO', -1, -1)", False)
     cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('LMAO', 'LMAO', -1, -1, -1)", False)
     cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('LMAO', '-1', 'LMAO', '-1', 'LMAO', '-1', -1, FALSE)", False)
+    cursor_func(f"INSERT INTO CALENDAR (personID, Title, Date, dbID) VALUES ('LMAO', 'LMAO', -1, -1)", False)
+    cursor_func(f"INSERT INTO TASKS (personID, Title, completed, dbID) VALUES ('LMAO', 'LMAO', FALSE, -1)", False)
 def clear_tables():
 
     cursor_func("DELETE FROM STUDENTS;",False)
@@ -106,7 +124,8 @@ def clear_tables():
     cursor_func("DELETE FROM GROUPS;",False)
     cursor_func("DELETE FROM MESSAGES;",False)
     cursor_func("DELETE FROM BULLYING_REQUESTS;",False)
-
+    cursor_func("DELETE FROM CALENDAR;",False)
+    cursor_func("DELETE FROM TASKS;",False)
 
 #Student functions
 def create_students():
@@ -338,3 +357,90 @@ def update_bullying_request(state, requestedID, causeID):
 
     cursor_func(f"UPDATE BULLYING_REQUESTS SET completed='{state}' WHERE requestedByID='{requestedID}' AND causeID='{causeID}'", False)
 
+#Calendar funtions
+def create_calendar_tables():
+
+    cursor_func("CREATE TABLE IF NOT EXISTS CALENDARS (personID TEXT, Title TEXT, DATE INT, dbID INT)", False)
+
+def get_calendars():
+
+    celendars = cursor_func("SELECT * FROM CALENDARS", True)
+    arr = []
+    for i in celendars:
+
+        ii = list(i)
+        arr.append(Calendar(personID=ii[0], Title=ii[1], Date=ii[2], dbID=ii[3]))
+
+    return arr
+
+def create_calendar_event(personID, title, date):
+
+    cursor_func(f"INSERT INTO CALENDARS (personID, Title, DATE, dbID) VALUES ('{personID}', '{title}', '{int(time.time())}', '{get_last_id(get_calendars()) + 1}')", False)
+
+def delete_calendar_event(personID, title):
+
+    cursor_func(f"DELETE FROM CALENDARS WHERE personID='{personID}' AND Title='{title}'", False)
+
+def get_calendar_event_from_dbID(dbID):
+
+    for event in get_calendars():
+
+        if (event.dbID == dbID):
+
+            return event
+    
+    return BLANK_CALENDAR
+
+def update_calendar_event(Title, dbID):
+
+    cursor_func(f"UPDATE CALENDARS SET Title='{Title}' WHERE dbID='{dbID}'", False)
+
+def delete_calendar_event_from_dbID(dbID):
+
+    cursor_func(f"DELETE FROM CALENDARS WHERE dbID='{dbID}'", False)
+
+#Task functions
+def create_task_tables():
+
+    cursor_func("CREATE TABLE IF NOT EXISTS TASKS (personID TEXT, Title TEXT, Completed BOOLEAN, dbID INT)", False)
+
+def get_tasks():
+
+    tesks = cursor_func("SELECT * FROM TASKS", True)
+    arr = []
+    for i in tesks:
+
+        ii = list(i)
+        arr.append(Task(personID=ii[0], Title=ii[1], Completed=ii[2], dbID=ii[3]))
+
+    return arr
+
+def create_task(personID, title, completed):
+
+    cursor_func(f"INSERT INTO TASKS (personID, Title, Completed, dbID) VALUES ('{personID}', '{title}', '{completed}', '{get_last_id(get_tasks()) + 1}')", False)
+
+def delete_task(personID, title):
+
+    cursor_func(f"DELETE FROM TASKS WHERE personID='{personID}' AND Title='{title}'", False)
+
+def get_task_from_dbID(dbID):
+
+    for task in get_tasks():
+
+        if (task.dbID == dbID):
+
+            return task
+    
+    return BLANK_TASK
+
+def update_task_title(Title, dbID):
+
+    cursor_func(f"UPDATE TASKS SET Title='{Title}' WHERE dbID='{dbID}", False)
+
+def update_task_completed(Completed, dbID):
+
+    cursor_func(f"UPDATE TASKS SET Completed='{Completed}' WHERE dbID='{dbID}", False)
+
+def delete_task_from_dbID(dbID):
+
+    cursor_func(f"DELETE FROM TASKS WHERE dbID='{dbID}'", False)
