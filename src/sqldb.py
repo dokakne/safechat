@@ -1,5 +1,6 @@
 import psycopg2
 import time
+import urllib.parse as urlparse 
 from pydantic import BaseModel
 from jose import jwt, JWTError
 import os
@@ -8,7 +9,14 @@ from datetime import date, datetime, timedelta
 
 SECRET_KEY = os.environ.get("APP_SECRET_KEY", "DefaultKey")
 pwd_context = CryptContext(schemes = ["bcrypt"], deprecated = "auto")
-conn = psycopg2.connect("user=postgres password=safechat")
+urlparse.uses_netloc.append("postgres")
+url = urlparse.urlparse(os.environ["DATABASE_URL"])
+conn = psycopg2.connect(database=url.path[1:],
+  user=url.username,
+  password=url.password,
+  host=url.hostname,
+  port=url.port
+)
 
 def hash_password(password: str) -> str:
     
@@ -171,8 +179,6 @@ def update_student(password, studentClass, studentID):
 def delete_student(studentID):
 
     cursor_func(f"DELETE FROM STUDENTS WHERE studentID='{studentID}'", False)
-
-delete_student(-1)
 
 #Admin functions
 def create_admin():
