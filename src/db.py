@@ -16,7 +16,10 @@ class Student(BaseModel):
     name: str
     password: str
     studentClass: str
-    studentID: int
+    studentID: str
+    DoB: str
+    Address: str
+    PhoneNumber: int
     dbID: int
     
 class Admin(BaseModel):

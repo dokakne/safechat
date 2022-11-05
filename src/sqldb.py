@@ -94,7 +94,7 @@ BLANK_TASK = Task(personID="", Title="", completed=False, dbID=-1)
 
 def get_last_id(arr):
 
-    return arr[-1].dbID
+    return int(arr[-1].dbID)
 
 def cursor_func(function, fetch):
     
@@ -172,6 +172,7 @@ def delete_student(studentID):
 
     cursor_func(f"DELETE FROM STUDENTS WHERE studentID='{studentID}'", False)
 
+delete_student(-1)
 
 #Admin functions
 def create_admin():
