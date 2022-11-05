@@ -16,7 +16,10 @@ class Student(BaseModel):
     name: str
     password: str
     studentClass: str
-    studentID: int
+    studentID: str
+    DoB: str
+    Address: str
+    PhoneNumber: int
     dbID: int
     
 class Admin(BaseModel):
@@ -58,7 +61,20 @@ class BullyingRequest(BaseModel):
     controlledByID: str
     dbID: int
     completed: bool
+    
+class Calendar(BaseModel):
 
+    personID: str
+    Title: str
+    Date: int
+    dbID: int
+
+class Tasks(BaseModel):
+
+    personID: str
+    Title: str
+    completed: bool
+    dbID: int
 BLANK_STUDENT = Student(name="", password="", studentClass="", studentID=-1, dbID=-1)
 BLANK_ADMIN = Admin(name="", password="", controllingClass="", dbID=-1, adminID=-1, role="")
 BLANK_CLASSROOM = Classroom(name="", dbID=-1, controllingTeacher="")
