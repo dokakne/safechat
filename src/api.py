@@ -39,10 +39,6 @@ def post_login(request: Request, username: str = Form(...), password: str = Form
 
         return RedirectResponse("/login?error=True", status_code=status.HTTP_401_UNAUTHORIZED)
 
-@app.get("/students")
-def get_students(request: Request):
-
-    return sqldb.get_students()
 
 @app.post("/add_student")
 def post_add_student(name: str = Form(...), password: str = Form(...), studentClass: str = Form(...), DoB: str = Form(...), Address: str = Form(...), PhoneNumber: int = Form(...), studentID: int = Form(...)):
@@ -76,33 +72,34 @@ def post_add_message(sender: str = Form(...), senderID: int = Form(...), receive
 
 @app.post("/report_bullying")
 def post_report_bullying(sender: str = Form(...), senderID: int = Form(...), cause: str = Form(...), causeID: int = Form(...), controlledBy: str = Form(...), controlledByID: int = Form(...), completed: bool = Form(...)):
-
-    sqldb.add_message(sender, senderID, cause, causeID, controlledBy, controlledByID, completed)
+    
+    print(completed)
+    sqldb.add_bullying_request(sender, senderID, cause, causeID, controlledBy, controlledByID, completed)
 
 @app.post("/create_chat")
 def post_create_chat(person1: str = Form(...), person1ID: str = Form(...), person2: str = Form(...), person2ID:str = Form(...), classroomID: int = Form(...)):
 
-    sqldb.create_chat(person1, person1ID, person2, person2ID, classroomID)
+    sqldb.add_group(person1, person1ID, person2, person2ID, classroomID)
 
 @app.get("/calendar")
 def get_calendar(personID: str = Form(...)):
 
-    return sqldb.get_calendar(personID)
+    return sqldb.get_calendar_event_from_personID(personID)
 
-@app.get("/tasks")
-def get_tasks(personID: str = Form(...)):
+@app.post("/tasks_per_person")
+def get_task_from_personID(personID: str = Form(...)):
 
-    return sqldb.get_tasks(personID)
+    return sqldb.get_task_from_personID(personID)
 
 @app.post("/add_calendar_event")
 def post_add_calendar_event(personID: str = Form(...), event: str = Form(...), date: str = Form(...)):
 
-    sqldb.add_calendar_event(personID, event, date)
+    sqldb.create_calendar_event(personID, event, date)
 
 @app.post("/add_task")
-def add_task(personID: str = Form(...), task: str = Form(...), date: str = Form(...)):
+def add_task(personID: str = Form(...), title: str = Form(...), completed: bool = Form(...)):
 
-    sqldb.add_task(personID, task, date)
+    sqldb.create_task(personID, title, completed)
 
 @app.post("/delete_calendar_event")
 def delete_calendar_event(dbID: int = Form(...)):
@@ -115,6 +112,6 @@ def delete_task(personID: str = Form(...), title: str = Form(...)):
     sqldb.delete_task(personID, title)
 
 @app.post("/complete_task")
-def complete_task(personID: str = Form(...), task: str = Form(...), date: str = Form(...)):
+def complete_task(completed: bool = Form(...), personID: str = Form(...), title: str = Form(...)):
 
-    sqldb.update_task_completed(personID, task, date)
+    sqldb.update_task_completed(completed, personID, title)
