@@ -6,11 +6,13 @@ from jose import jwt, JWTError
 import os
 from passlib.context import CryptContext
 from datetime import date, datetime, timedelta
+from dotenv import load_dotenv
 
+load_dotenv()
 SECRET_KEY = os.environ.get("APP_SECRET_KEY", "DefaultKey")
 pwd_context = CryptContext(schemes = ["bcrypt"], deprecated = "auto")
 urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(os.environ["DATABASE_URL"])
+url = urlparse.urlparse(os.getenv("DATABASE_URL"))
 conn = psycopg2.connect(database=url.path[1:],
   user=url.username,
   password=url.password,
@@ -118,11 +120,11 @@ def add_base():
 
     cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', 'NODOB', 'Bannnana Lane', 321489, 0)", False)
     cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('LMAO', 'LMAO', 'NOCLASS', -1, -1, 'NOROLE')", False)
-    cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingTeacher) VALUES ('LMAO', -1, 'LMAO')", False)
+    cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingClass) VALUES ('LMAO', -1, 'LMAO')", False)
     cursor_func(f"INSERT INTO GROUPS (person1, person1ID, person2, person2ID, dbID, classroomID) VALUES ('LMAO', 'LMAO', 'LMAO', 'LMAO', -1, -1)", False)
     cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('LMAO', 'LMAO', -1, -1, -1)", False)
     cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('LMAO', '-1', 'LMAO', '-1', 'LMAO', '-1', -1, FALSE)", False)
-    cursor_func(f"INSERT INTO CALENDAR (personID, Title, Date, dbID) VALUES ('LMAO', 'LMAO', -1, -1)", False)
+    cursor_func(f"INSERT INTO CALENDARS (personID, Title, Date, dbID) VALUES ('LMAO', 'LMAO', -1, -1)", False)
     cursor_func(f"INSERT INTO TASKS (personID, Title, completed, dbID) VALUES ('LMAO', 'LMAO', FALSE, -1)", False)
 def clear_tables():
 
@@ -228,7 +230,7 @@ def deleteAdmin(adminID):
 #Classroom functions
 def create_classrooms():
 
-    cursor_func("CREATE TABLE IF NOT EXISTS CLASSROOMS (name TEXT, dbID INTEGER, controllingClass, TEXT)", False)
+    cursor_func("CREATE TABLE IF NOT EXISTS CLASSROOMS (name TEXT, dbID INTEGER, controllingClass TEXT)", False)
 
 def add_classroom(name, controllingTeacher):
 
@@ -299,7 +301,7 @@ def get_messages_for_user(UID):
 #Group functions
 def create_group_tables():
 
-    cursor_func("CREATE TABLE IF NOT EXISTS GROUPS (person1 TEXT, person1ID TEXT, person2 TEXT, person2ID TEXT, dbID INTEGER, classroomID INTEFER)", False)
+    cursor_func("CREATE TABLE IF NOT EXISTS GROUPS (person1 TEXT, person1ID TEXT, person2 TEXT, person2ID TEXT, dbID INTEGER, classroomID INTEGER)", False)
 
 def get_groups():
 
@@ -314,7 +316,7 @@ def get_groups():
 
 def add_group(person1, person1ID, person2, person2ID, classroomID):
 
-    cursor_func(f"INSERT INTO GROUPS (person1, person1ID, person2, person2ID, dbID, classroomID) VALUES ('{person1}', '{person1ID}', '{person2}', '{person2ID}', '{get_last_id(get_groups()) + 1}', '{classroomID}',)", False)
+    cursor_func(f"INSERT INTO GROUPS (person1, person1ID, person2, person2ID, dbID, classroomID) VALUES ('{person1}', '{person1ID}', '{person2}', '{person2ID}', '{get_last_id(get_groups()) + 1}', '{classroomID}')", False)
 
 
 def get_group_object_from_classroom_id(classroomID):
@@ -348,7 +350,7 @@ def get_bullying_requests():
     return arr
 def add_bullying_request(requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, completed):
 
-    cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VAUES ('{requestedBy}', '{requestedByID}', '{cause}', '{causeID}', '{controlledBy}', '{controlledByID}', {get_last_id(get_bullying_requests()) + 1}, {completed})", False)
+    cursor_func(f"INSERT INTO BULLYING_REQUESTS (requestedBy, requestedByID, cause, causeID, controlledBy, controlledByID, dbID, completed) VALUES ('{requestedBy}', '{requestedByID}', '{cause}', '{causeID}', '{controlledBy}', '{controlledByID}', {get_last_id(get_bullying_requests()) + 1}, {completed})", False)
 
 def get_bullying_request_by_requestedID_and_causeID(requestedID, causeID):
 
@@ -388,11 +390,11 @@ def delete_calendar_event(personID, title):
 
     cursor_func(f"DELETE FROM CALENDARS WHERE personID='{personID}' AND Title='{title}'", False)
 
-def get_calendar_event_from_dbID(dbID):
+def get_calendar_event_from_personID(personID):
 
     for event in get_calendars():
 
-        if (event.dbID == dbID):
+        if (event.personID == personID):
 
             return event
     
@@ -418,7 +420,8 @@ def get_tasks():
     for i in tesks:
 
         ii = list(i)
-        arr.append(Task(personID=ii[0], Title=ii[1], Completed=ii[2], dbID=ii[3]))
+
+        arr.append(Task(personID=ii[0], Title=ii[1], completed=ii[2], dbID=ii[3]))
 
     return arr
 
@@ -430,11 +433,11 @@ def delete_task(personID, title):
 
     cursor_func(f"DELETE FROM TASKS WHERE personID='{personID}' AND Title='{title}'", False)
 
-def get_task_from_dbID(dbID):
+def get_task_from_personID(personID):
 
     for task in get_tasks():
 
-        if (task.dbID == dbID):
+        if (task.personID == personID):
 
             return task
     
@@ -444,10 +447,20 @@ def update_task_title(Title, dbID):
 
     cursor_func(f"UPDATE TASKS SET Title='{Title}' WHERE dbID='{dbID}", False)
 
-def update_task_completed(Completed, dbID):
+def update_task_completed(Completed, personID, Title):
 
-    cursor_func(f"UPDATE TASKS SET Completed='{Completed}' WHERE dbID='{dbID}", False)
+    cursor_func(f"UPDATE TASKS SET Completed='{Completed}' WHERE personID='{personID}' AND Title='{Title}'", False)
 
 def delete_task_from_dbID(dbID):
 
     cursor_func(f"DELETE FROM TASKS WHERE dbID='{dbID}'", False)
+
+create_students()
+create_admin()
+create_classrooms()
+create_bullying_request_tables()
+create_group_tables()
+create_message_tables()
+create_calendar_tables()
+create_task_tables()
+add_base()
