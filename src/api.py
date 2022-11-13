@@ -43,7 +43,8 @@ def post_login(request: Request, username: str = Form(...), password: str = Form
 @app.post("/add_student")
 def post_add_student(name: str = Form(...), password: str = Form(...), studentClass: str = Form(...), DoB: str = Form(...), Address: str = Form(...), PhoneNumber: int = Form(...), studentID: int = Form(...)):
 
-    sqldb.add_student(name, password, studentClass, DoB, Address, PhoneNumber, studentID)
+    dbID = sqldb.add_student(name, password, studentClass, DoB, Address, PhoneNumber, studentID)
+    return dbID
 
 @app.get("/get_students")
 def get_students(request: Request):
