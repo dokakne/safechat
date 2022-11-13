@@ -144,7 +144,9 @@ def create_students():
 
 def add_student(name, password, studentClass, DoB, Address, PhoneNumber, studentID):
 
-    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('{name}', '{password}', '{studentClass}', '{studentID}', '{DoB}', '{Address}', {PhoneNumber},'{get_last_id(get_students()) + 1}')", False)
+    dbID = get_last_id(get_students()) + 1
+    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('{name}', '{password}', '{studentClass}', '{studentID}', '{DoB}', '{Address}', {PhoneNumber},'{dbID}')", False)
+    return dbID
 
 def get_students():
 
