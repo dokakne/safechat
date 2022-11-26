@@ -9,8 +9,6 @@ from datetime import date, datetime, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
-SECRET_KEY = os.environ.get("APP_SECRET_KEY", "DefaultKey")
-pwd_context = CryptContext(schemes = ["bcrypt"], deprecated = "auto")
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.getenv("DATABASE_URL"))
 conn = psycopg2.connect(database=url.path[1:],
@@ -20,8 +18,11 @@ conn = psycopg2.connect(database=url.path[1:],
   port=url.port
 )
 
-def hash_password(password: str) -> str:
-    
+ALGORITHM = "HS256"
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password):
+
     return pwd_context.hash(password)
 
 class Student(BaseModel):
@@ -118,8 +119,8 @@ def cursor_func(function, fetch):
 
 def add_base():
 
-    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('LMAO', 'LMAO', 'NOCLASS', '-1', 'NODOB', 'Bannnana Lane', 321489, 0)", False)
-    cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('LMAO', 'LMAO', 'NOCLASS', -1, -1, 'NOROLE')", False)
+    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('LMAO', '{hash_password('LMAO')}', 'NOCLASS', '-1', 'NODOB', 'Bannnana Lane', 321489, 0)", False)
+    cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('LMAO', '{hash_password('LMAO')}', 'NOCLASS', -1, -1, 'NOROLE')", False)
     cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingClass) VALUES ('LMAO', -1, 'LMAO')", False)
     cursor_func(f"INSERT INTO GROUPS (person1, person1ID, person2, person2ID, dbID, classroomID) VALUES ('LMAO', 'LMAO', 'LMAO', 'LMAO', -1, -1)", False)
     cursor_func(f"INSERT INTO MESSAGES (contents, sentBy, sentByID, timeSent, groupID) VALUES ('LMAO', 'LMAO', -1, -1, -1)", False)
@@ -134,7 +135,7 @@ def clear_tables():
     cursor_func("DELETE FROM GROUPS;",False)
     cursor_func("DELETE FROM MESSAGES;",False)
     cursor_func("DELETE FROM BULLYING_REQUESTS;",False)
-    cursor_func("DELETE FROM CALENDAR;",False)
+    cursor_func("DELETE FROM CALENDARS;",False)
     cursor_func("DELETE FROM TASKS;",False)
 
 #Student functions
@@ -145,7 +146,7 @@ def create_students():
 def add_student(name, password, studentClass, DoB, Address, PhoneNumber, studentID):
 
     dbID = get_last_id(get_students()) + 1
-    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('{name}', '{password}', '{studentClass}', '{studentID}', '{DoB}', '{Address}', {PhoneNumber},'{dbID}')", False)
+    cursor_func(f"INSERT INTO STUDENTS (name, password, studentClass, studentID, DoB, Address, PhoneNumber, dbID) VALUES ('{name}', '{hash_password(password)}', '{studentClass}', '{studentID}', '{DoB}', '{Address}', {PhoneNumber},'{dbID}')", False)
     return dbID
 
 def get_students():
@@ -162,11 +163,11 @@ def get_student_object_from_username_and_password(username, password):
 
     students = get_students()
     for student in students:
-
-        if (student.name == username and student.password == password):
+        
+        if (student.name == username and (pwd_context.verify(password, student.password))):
 
             return student
-    
+        
     return BLANK_STUDENT
 
 def login_student(username, password):
@@ -208,7 +209,7 @@ def get_admin_object_from_username_and_password(username, password):
     admins = get_students()
     for admin in admins:
 
-        if (admin.name == username and admin.password == password):
+        if (admin.name == username and (pwd_context.verify(password, admin.password))):
 
             return add_admin
     
@@ -465,4 +466,5 @@ create_group_tables()
 create_message_tables()
 create_calendar_tables()
 create_task_tables()
+clear_tables()
 add_base()
