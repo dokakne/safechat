@@ -131,3 +131,13 @@ def delete_task(personID: str = Form(...), title: str = Form(...)):
 def complete_task(completed: bool = Form(...), personID: str = Form(...), title: str = Form(...)):
 
     sqldb.update_task_completed(completed, personID, title)
+
+@app.post("/add_class")
+def add_class(name: str = Form(...), controllingTeacher: str = Form(...)):
+
+    sqldb.add_classroom(name, controllingTeacher)
+
+@app.get("/get_classes")
+def get_classrooms():
+
+    return sqldb.get_classrooms()

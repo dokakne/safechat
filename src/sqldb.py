@@ -237,17 +237,16 @@ def create_classrooms():
 
 def add_classroom(name, controllingTeacher):
 
-    cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingClass) VALUES ('{name}', '{get_last_id(get_classrooms() + 1)}', '{controllingTeacher}'", False)
+    cursor_func(f"INSERT INTO CLASSROOMS (name, dbID, controllingClass) VALUES ('{name}', '{get_last_id(get_classrooms()) + 1}', '{controllingTeacher}')", False)
 
 def get_classrooms():
 
-    classrems = cursor_func("SELECT * FROM CLASSROOMS")
+    classrems = cursor_func("SELECT * FROM CLASSROOMS", True)
     arr = []
     for i in classrems:
         
         ii = list(i)
-        arr.append(Classroom(ii[0], ii[1], ii[2]))
-
+        arr.append(Classroom(name=ii[0], dbID=ii[1], controllingTeacher=ii[2]))
     return arr
 
 
@@ -457,5 +456,3 @@ def update_task_completed(Completed, personID, Title):
 def delete_task_from_dbID(dbID):
 
     cursor_func(f"DELETE FROM TASKS WHERE dbID='{dbID}'", False)
-
-add_base()

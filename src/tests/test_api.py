@@ -116,3 +116,13 @@ def test_complete_task():
     response = client.post("/complete_task", data={"completed": True, "personID": "132", "title":"Test"})
     print(response.text)
     assert response.status_code == 200
+
+def test_add_class():
+
+    response = client.post("/add_class", data={"name": "Test", "controllingTeacher": "Test"})
+    assert response.status_code == 200
+
+def test_get_classes():
+
+    response = client.get("/get_classes")
+    assert response.status_code == 200
