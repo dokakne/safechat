@@ -1,0 +1,15 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "src/*.py",
+            "use": "@dokaknae/safechat"
+        }
+    ],
+    "routes": [
+        {
+            "src": "(.*)",
+            "dest": "src/api.py"
+        }
+    ]
+}
