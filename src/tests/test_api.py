@@ -39,6 +39,21 @@ def test_delete_student():
     response = client.post("/delete_student", data={"studentID": 123})
     assert response.status_code == 200
 
+def test_add_admin():
+
+    response = client.post("/add_admin", data={"name": "Test", "password": "Test", "controllingClass": "Test", "adminID": 123, "role": "Teacher"})
+    assert response.status_code == 200
+
+def test_get_admins():
+
+    response = client.get("/get_admins")
+    assert response.status_code == 200
+
+def test_delete_admin():
+
+    response = client.post("/delete_admin", data={"adminID": 123})
+    assert response.status_code == 200
+
 def test_get_messages():
 
     response = client.get("/get_messages")

@@ -192,7 +192,7 @@ def create_admin():
     
 def add_admin(name, password, controllingClass, adminID, role):
 
-    cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('{name}', '{password}', '{controllingClass}', '{get_last_id(get_admins()) + 1}'), '{adminID}', '{role}'", False)
+    cursor_func(f"INSERT INTO ADMINS (name, password, controllingClass, dbID, adminID, role) VALUES ('{name}', '{hash_password(password)}', '{controllingClass}', '{get_last_id(get_admins()) + 1}', '{adminID}', '{role}')", False)
 
 def get_admins():
 
@@ -226,7 +226,7 @@ def update_admin(password, controllingClass, adminID):
 
     cursor_func(f"UPDATE ADMINS SET password='{password}', controllingClass='{controllingClass}' WHERE adminID='{adminID}';", False)
 
-def deleteAdmin(adminID):
+def delete_admin(adminID):
 
     cursor_func(f"DELETE FROM ADMINS WHERE adminID='{adminID}'", False)
 
@@ -458,13 +458,4 @@ def delete_task_from_dbID(dbID):
 
     cursor_func(f"DELETE FROM TASKS WHERE dbID='{dbID}'", False)
 
-create_students()
-create_admin()
-create_classrooms()
-create_bullying_request_tables()
-create_group_tables()
-create_message_tables()
-create_calendar_tables()
-create_task_tables()
-clear_tables()
 add_base()

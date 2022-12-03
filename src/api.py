@@ -56,6 +56,21 @@ def post_delete_student(studentID: int = Form(...)):
 
     sqldb.delete_student(studentID)
 
+@app.post("/add_admin")
+def post_add_admin(name: str = Form(...), password: str = Form(...), controllingClass: str = Form(...), adminID: int = Form(...), role: str = Form(...)):
+
+    return sqldb.add_admin(name, password, controllingClass, adminID, role)
+
+@app.get("/get_admins")
+def get_admins(request: Request):
+
+    return sqldb.get_admins()
+
+@app.post("/delete_admin")
+def post_delete_admin(adminID: int = Form(...)):
+    
+    return sqldb.delete_admin(adminID)
+
 @app.get("/get_messages")
 def get_messages():
 
