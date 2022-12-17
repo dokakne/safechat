@@ -110,12 +110,17 @@ def get_last_id(arr):
 def cursor_func(function, fetch):
     
     cursor = conn.cursor()
-    cursor.execute(function)
-    if (fetch):
-        records = cursor.fetchall()
-        return records
-    
-    conn.commit()
+    try:
+
+        cursor.execute(function)
+        if (fetch):
+            records = cursor.fetchall()
+            return records
+        
+        conn.commit()
+    except:
+
+        cursor.rollback()
 
 def add_base():
 
